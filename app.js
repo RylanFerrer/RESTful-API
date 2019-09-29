@@ -87,7 +87,47 @@ app.route("/articles/:articleTitle")
             res.send("No Matching Article Found");
         }
     });
-});
+})
+.put((req,res) => {
+    let title = req.params.articleTitle;
+    Article.update(
+        {title:title},
+        {title:req.body.title, content: req.body.content},
+        {overwrite:true},
+        (err,results) => {
+            if(!err)
+            {
+                res.send("Successfully Updated Article")
+            }
+        })
+})
+.patch((req,res) => {
+    let title = req.params.articleTitle;
+    Article.update(
+        {title:title},
+        {$set: req.body},
+        (err) => {
+        if(!err) {
+            res.send("Successfully Updated Article");
+        } else {
+            res.send(err);
+        }
+    }
+    
+    )
+})
+.delete((req,res) => {
+    Article.deleteOne({title:req.params.articleTitle}, (err) => {
+        if(!err)
+        {
+            res.send("Successfully Deleted Article");
+        }
+        else 
+        {
+            res.send(err);
+        }
+    });
+})
 app.listen(3000, function() {
   console.log("Server started on port 3000");
 });
